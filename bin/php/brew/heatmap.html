@@ -1,0 +1,44 @@
+<%
+sel_gene = GET$gene
+exp = GET$exp
+email = GET$email
+dist_method = GET$dist_method
+hclust_method = GET$hclust_method
+fname = GET$fname
+
+gene_list <- strsplit(sel_gene, "\n")
+gene_list <- gene_list[[1]]
+
+exp_list <- strsplit(exp, "XXX")
+exp_list <- exp_list[[1]]
+
+path <- paste(getwd(), "rnaseq.txt", sep = "/")
+mydata <- read.table(path, header = T, row.names=1)
+
+mat <- mydata[, exp_list]
+
+## Gene we are interested
+req <- mat[gene_list, ]
+
+## Remove NA values
+req <- na.omit(req)
+req <- scale(req)
+
+## Heatmap
+setwd('..')
+path <- paste(getwd(), "tmp", sep = "/")
+name <- paste(path, "/", email, "/", fname, ".png", sep = '')
+if (file.exists(name)) file.remove(name)
+png(name)
+mydist <- function(c) { dist(c, method = dist_method) }
+myclust <- function(c) { hclust(c, method = hclust_method) }
+heatmap(req, distfun = mydist, hclustfun = myclust, margins = c(10, 10))
+dev.off()
+
+name <- gsub(path, '', name)
+name <- paste('/tmp', name, sep='')
+output <- name
+
+cat(toJSON(output))
+
+%>

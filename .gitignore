@@ -1,0 +1,6 @@
+data/*
+bin/data/*
+bin/php/data/*
+data_chipseq/*
+data_rnaseq/*
+php/data/*

@@ -1,0 +1,17 @@
+<%
+
+#library(RMySQL)
+#library(BUS)
+mydb = dbConnect(MySQL(), user='root', password='loyola', dbname='rnaseqchipseq', host='localhost', unix.socket='/var/run/mysqld/mysqld.sock')
+
+## Select query
+rs = dbSendQuery(mydb, "select gene_id, description from gene_descriptions")
+data = fetch(rs, n=-1)
+data <- t(data)
+colnames(data) <- data[1,]
+data <- data[-1,]
+
+
+cat(toJSON(data))
+
+%>

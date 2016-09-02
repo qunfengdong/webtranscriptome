@@ -1,0 +1,27 @@
+<%
+ab = GET$ab;
+
+mylistcount = strtoi(GET$mylistcount)
+mylisttotal = strtoi(GET$mylisttotal)
+pathwaycount = strtoi(GET$pathwaycount)
+genecount = strtoi(GET$genecount)
+
+#cat("kashi");
+#cat("<br>");
+#cat(mylistcount);
+#cat("<br>");
+#cat(mylisttotal);
+#cat("<br>");
+#cat(pathwaycount);
+#cat("<br>");
+#cat(genecount);
+
+ok <- phyper(mylistcount - 1, pathwaycount, genecount - pathwaycount, mylisttotal, lower.tail=F)
+#cat("<br>");
+cat(ok);
+
+#test <- matrix(c(mylistcount - 1, pathwaycount, genecount - pathwaycount, mylisttotal), ncol=2, nrow=2)
+#ok <- fisher.test(test,alternative = "greater")
+#cat(ok$p.value)
+
+%>

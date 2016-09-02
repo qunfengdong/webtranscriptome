@@ -1,0 +1,30 @@
+<%
+
+library(RMySQL)
+mydb = dbConnect(MySQL(), user='root', password='loyola', dbname='rnaseqchipseq', host='localhost', unix.socket='/var/run/mysqld/mysqld.sock')
+
+exp = GET$exp
+cond = GET$cond
+value = GET$value
+
+## List tables and fields
+dbListTables(mydb)
+dbListFields(mydb, 'rnaseq_expression')
+
+## Select query
+cmd = paste("select * from rnaseq_expression where ", exp, cond, value, sep= ' ')
+rs = dbSendQuery(mydb, cmd)
+data = fetch(rs, n=-1)
+dim(data)
+## 71 15
+
+cmd = paste("select count(*) from rnaseq_expression where ", exp, cond, value, sep= ' ')
+rs = dbSendQuery(mydb, cmd)
+data = fetch(rs, n=-1)
+#val = cat(data[1,])
+#print(val)
+#cat(toJSON(data[1,]))
+cat(data[1,])
+
+#cat(toJSON(print(data[1,])))
+%>

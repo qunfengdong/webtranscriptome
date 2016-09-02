@@ -1,0 +1,93 @@
+<%
+sel_gene = GET$gene
+cutoff = as.numeric(GET$cutoff)
+op = as.character(GET$op)
+method = GET$method
+
+exp = GET$exp
+exp_list <- strsplit(exp, "XXX")
+exp_list <- exp_list[[1]]
+
+#sel_gene = "GRMZM2G328795"
+#cutoff = "0.9"
+#op = ">="
+#method = "spearman"
+#exp = "mtXXXwtXXXWW1XXXWD1"
+
+#print(sel_gene);
+#print("<br>");
+#print(cutoff);
+#print("<br>");
+#print(op);
+#print("<br>");
+#print(method);
+#print("<br>");
+#print(exp);
+#print("<br>");
+
+path <- paste(getwd(), "rnaseq.txt", sep = "/")
+mydata <- read.table(path, header = T, row.names=1)
+
+## Set the experiments we want
+mat <- mydata[, exp_list]
+
+## Gene we are interested
+req <- mat[sel_gene, ]
+
+#print(mydata)
+
+A <- apply(req, 1, as.numeric)
+B <- apply(mat, 1, as.numeric)
+newcor <- cor(A, B, method=c(method))
+
+## Remove rows that have NA in it
+#cor_matrix_no_na <- na.omit(cor_matrix)
+cor_matrix_no_na <- na.omit(t(newcor))
+
+## Get genes that are correlated with more then .8
+if(op == ">="){
+	list_genes <- rownames(cor_matrix_no_na)[cor_matrix_no_na[,1] >= cutoff]
+} else {
+	list_genes <- rownames(cor_matrix_no_na)[cor_matrix_no_na[,1] <= cutoff]
+}
+#list_genes <- list_genes[which(list_genes==sel_gene)]
+
+#print(list_genes);
+
+if(is.null(list_genes)){
+	erroroutput <- '<span style="color: red">ERROR: No genes found</span>'
+}
+
+log = GET$log;
+if(log == 1){
+	mydatalog <- log2(mydata)
+	mydatalog[ mydatalog == -Inf ] = 0
+}
+
+arr_plots <- "<div class='row'><div class='col-md-12'><div class='box box-success'><div class='box-body'><table id='resulttable' class='table table-bordered'><thead><tr><th></th><th>Gene Id</th><th>Gene description</th><th>"
+th <- paste(colnames(req), collapse = "</th><th>")
+th <- gsub("_", ".", th)
+arr_plots <- paste(arr_plots, th, "</th></tr></thead><tbody>", sep = "")
+
+for(sample in list_genes){
+	tr <- paste("<tr><td><input type='checkbox' id='geneselect' /></td><td><a href='http://maizegdb.org/cgi-bin/displaygenemodelrecord.cgi?id=", sample, "' target='_blank'>",sample,"</a></td><td>", sep = "")
+	if(log == 1){
+		val <- paste(mydatalog[sample, exp_list], collapse = "</td><td>")
+	} else {
+		val <- paste(mydata[sample, exp_list], collapse = "</td><td>")
+	}
+	arr_plots <- paste(arr_plots, tr, val, "</td></tr>", sep="")
+}
+
+arr_plots <- paste(arr_plots, "</tbody></table><br>", sep="")
+
+output <- arr_plots
+htmloutput <- paste(output, '<div id="combine_graph"><button onclick="getGeneList()" class="btn btn-success">Combine selected graph</button>&nbsp;<button onclick="getAllGeneList()" class="btn btn-success">Combine all graphs</button></div></div></div></div>');
+
+if(length(list_genes) == 0){
+	cat(toJSON(erroroutput))
+} else {
+	cat(toJSON(htmloutput))
+}
+
+%>

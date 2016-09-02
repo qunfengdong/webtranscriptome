@@ -1,0 +1,23 @@
+<%
+
+val = GET$val
+val = gsub("_", '', val)
+#cat(val);
+val = gsub(" ", '', val)
+
+arrval = unlist(strsplit(val, ","))
+arrval = as.double(arrval)
+
+#cat(arrval[1]);
+
+#cat(arrval);
+#cat("<br>");
+ok <- p.adjust(arrval, method = "BH");
+ok <- as.character(ok)
+ok <- paste(ok, collapse="___")
+cat(ok);
+#cat("1.45241375e-05___1.45241375e-05___0.02201888___0.00529073166666667___0.02201888")
+#cat(paste(c("kashi", "usa", "india"), collapse="___"));
+#cat("<br>");
+
+%>

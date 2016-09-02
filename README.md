@@ -45,7 +45,7 @@ reference_gtf = ''
 
 Note:
 - the chromosome information in reference genome is similar to the gtf file
-- In the GTF file, the gene id in column 9, must be in the format of **gene_id "<id>";**
+- In the GTF file, the gene id in column 9, must be in the format of **gene_id "geneid";**
 
 ## Additional files
 
@@ -88,50 +88,54 @@ The format of the file must be 3 columns, separated by tab
 
 ### Executables
 
-- Meme package
-provide path to the meme executable file
+- Meme package: provide path to the meme executable file
 ```
 program_meme = '/path/to/meme'
 ```
 
-- BLAST package
-provide path to the binary folder of the blast executables
+- BLAST package: provide path to the binary folder of the blast executables
 ```
 program_blast = '/path/to/blast/bin'
 ```
 
-- Goatools package, provide path to the 2 binary files of goatools
+- Goatools package: provide path to the 2 binary files of goatools
 ```
 program_goatools = '/path/to/bin/find_enrichment.py'
 program_goatools = '/path/to/bin/plot_go_term.py'
 ```
 
-- JBrowse
-Download the JBrowse latest version, unzip and install it in the folder of DOCUMENT_ROOT, as mentioned in Apache. Provide the JBrowse folder name
+- JBrowse: Download the JBrowse latest version, unzip and install it in the folder of DOCUMENT_ROOT, as mentioned in Apache. Provide the JBrowse folder name
 ```
 program_jbrowse = 'JBrowse-1.12.1'
 ```
 
-RApache
-Install the following packages in R as superuser
+- RApache: Install the following packages in R as superuser
+```
 $ sudo apt-get install r-cran-rjson
 $ sudo apt-get install r-cran-brew
 $ sudo apt-get install r-cran-rmysql
+```
 
 Update Directory in the apache.conf to execute the R scripts at the brew folder in the DOCUMENT_ROOT
 For example, the Directory is updates to
+```
 <Directory /DOCUMENT_ROOT/brew>
 SetHandler r-script
 RHandler brew::brew
 </Directory>
+```
 
-INSTALLATION
-============
+## INSTALLATION
+
 Run the shell script
+```
 $ sh run.sh
+```
 
 This creates the php folder, copy paste the contents of PHP folder to the DOCUMENT_ROOT
+```
 $ cp -r php/* /DOCUMENT_ROOT/.
+```
 
 
 

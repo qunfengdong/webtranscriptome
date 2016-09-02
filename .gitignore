@@ -4,3 +4,5 @@ bin/php/data/*
 data_chipseq/*
 data_rnaseq/*
 php/data/*
+.init
+.gitignore
